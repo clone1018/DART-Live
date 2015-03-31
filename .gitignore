@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Our Project
+.c9/
+dart-transit/
+src/

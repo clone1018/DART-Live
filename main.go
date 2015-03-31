@@ -1,33 +1,28 @@
 package main
 
 import (
-	"net/http"
-	"github.com/bdon/go.gtfs"
-	"fmt"
-	"os"
 	"encoding/json"
+	"fmt"
+	"github.com/bdon/go.gtfs"
+	"net/http"
+	"os"
+
+	"database/sql"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	fmt.Println("Loading ~/google-transit")
-	feed := gtfs.Load("/home/clone1018/google-transit", true)
-	fmt.Println("Done Loading ~/google-transit")
-	route := feed.RouteByShortName("533")
-	fmt.Println("Finding route")
+	gtfs, err := sql.Open("gtfs", "user=ubuntu dbname=dartlive sslmode=verify-full")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	strB, err := json.Marshal(route.LongestShape())
+	rows, err := db.Query("SELECT * FROM gtfs.routes;")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(strB))
-
-	for _, shape := range route.Shapes() {
-		for _, coords := range shape.Coords {
-			fmt.Println(coords)
-		}
-	}
-
-	fmt.Printf("%v", route.Shapes())
+	
 	os.Exit(0)
 
 	fs := http.FileServer(http.Dir("public"))
